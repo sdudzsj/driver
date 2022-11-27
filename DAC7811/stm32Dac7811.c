@@ -1,11 +1,19 @@
 /*
+ * @Author: luxun59 68161305+luxun59@users.noreply.github.com
+ * @Date: 2022-11-24 19:04:18
+ * @LastEditors: luxun59 luxun59@126.com
+ * @LastEditTime: 2022-11-27 21:27:09
+ * @FilePath: \driver\DAC7811\stm32Dac7811.c
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+/*
  * dac7811.c
  *
  *  Created on: 2022年7月10日
  *      Author: 14913
  */
 
-#include "DAC7811.h"
+#include "stm32Dac7811.h"
 
 
 #define SCLK_Clock RCC_APB2Periph_GPIOA
@@ -100,7 +108,7 @@ void dac7811_dataprocess(uint16_t *adcdata,uint16_t *dacdata,uint32_t num,uint8_
 
 
 /*
- *
+ * 使用介绍
  *          dac7811_dataprocess(g_u16adcBuffer,g_u16dacdata,DACNUM);
  *          uint16_t txdata = 0x13Cf;
             //1. hardware
