@@ -2,11 +2,12 @@
  * @Author: luxun59 luxun59@126.com
  * @Date: 2022-11-27 20:46:52
  * @LastEditors: luxun59 luxun59@126.com
- * @LastEditTime: 2022-11-27 21:12:30
- * @FilePath: \driver\ADS1115\ads1115.c
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @LastEditTime: 2022-12-02 23:05:39
+ * @FilePath: \undefinedc:\Users\14913\Desktop\c2000\driver\ADS1115\ads1115.c
+ * @Description: 
+ * 
+ * Copyright (c) 2022 by luxun59 luxun59@126.com, All Rights Reserved. 
  */
-
 
 #include "ads1115.h"
 

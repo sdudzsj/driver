@@ -1,10 +1,19 @@
 /*
+ * @Author: luxun59 luxun59@126.com
+ * @Date: 2022-11-27 20:47:01
+ * @LastEditors: luxun59 luxun59@126.com
+ * @LastEditTime: 2022-12-02 23:05:31
+ * @FilePath: \undefinedc:\Users\14913\Desktop\c2000\driver\ADS1115\ads1115.h
+ * @Description: 
+ * 
+ * Copyright (c) 2022 by luxun59 luxun59@126.com, All Rights Reserved. 
+ */
+/*
  * ads1115.h
  *
  *  Created on: 2022年8月11日
  *      Author: 14913
  */
-
 #ifndef APP_INC_ADS1115_H_
 #define APP_INC_ADS1115_H_
 
