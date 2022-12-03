@@ -2,7 +2,7 @@
  * @Author: luxun59 luxun59@126.com
  * @Date: 2022-12-03 16:43:00
  * @LastEditors: luxun59 luxun59@126.com
- * @LastEditTime: 2022-12-03 19:00:39
+ * @LastEditTime: 2022-12-03 20:22:15
  * @FilePath: \driver\DAC7811\bspDac7811.c
  * @Description: 
  * 
@@ -293,7 +293,184 @@ void DAC7811_Soft_Write(uint16_t da) //DAC7811 12bits
 
 
 
+#if MCUTYPE==STM32
+
+
+#elif MCUTYPE==STM32HAL
+
+
+#elif MCUTYPE==MSP432P
+
+
+#elif MCUTYPE==MSP432E
+
+#define DAC7811_SSI_BASE           SSI0_BASE
+#define DAC7811_SSI_INT            INT_SSI0
+#define DAC7811_SSI_SYSCTL_PERIPH  SYSCTL_PERIPH_SSI0
+
+
+#define DAC7811_SSI_SCLK_PORTBASE  GPIO_PORTA_BASE
+#define DAC7811_SSI_MTX_PORTBASE   GPIO_PORTA_BASE
+#define DAC7811_SSI_MRX_PORTBASE   GPIO_PORTA_BASE
+#define DAC7811_SSI_SYNC_PORTBASE  GPIO_PORTA_BASE
+
+#define DAC7811_GPIO_SCLK_SYSCTL   SYSCTL_PERIPH_GPIOA
+#define DAC7811_GPIO_MTX_SYSCTL    SYSCTL_PERIPH_GPIOA
+#define DAC7811_GPIO_MRX_SYSCTL    SYSCTL_PERIPH_GPIOA
+#define DAC7811_GPIO_SYNC_SYSCTL   SYSCTL_PERIPH_GPIOA
+
+#define DAC7811_SSI_SCLK_Pin       GPIO_PIN_2
+#define DAC7811_SSI_MTX_Pin        GPIO_PIN_4
+#define DAC7811_SSI_MRX_Pin        GPIO_PIN_5
+#define DAC7811_SSI_SYNC_Pin       GPIO_PIN_3
+
+#define DAC7811_SSI_SCLK_GPIO      GPIO_PA2_SSI0CLK
+#define DAC7811_SSI_MTX_GPIO       GPIO_PA4_SSI0XDAT0
+#define DAC7811_SSI_MRX_GPIO       GPIO_PA5_SSI0XDAT1
+#define DAC7811_SSI_SYNC_GPIO      GPIO_PA3_SSI0FSS
+
+#elif MCUTYPE==C2000
+
 #endif
+
+
+
+
+
+/**
+ * @description: 硬件ssi使用spi设置。
+ * @return {*}
+ */
+void DAC7811_SPI_MASter_config(void)
+{
+    #if MCUTYPE==STM32
+
+
+    #elif MCUTYPE==STM32HAL
+
+
+    #elif MCUTYPE==MSP432P
+
+
+    #elif MCUTYPE==MSP432E
+
+    /* Enable clocks to GPIO Port  and configure pins as SSI */
+    MAP_SysCtlPeripheralEnable(DAC7811_GPIO_SCLK_SYSCTL);
+    while(!(MAP_SysCtlPeripheralReady(DAC7811_GPIO_SCLK_SYSCTL)))
+    {
+    }
+    MAP_GPIOPinConfigure(DAC7811_SSI_SCLK_GPIO);
+    MAP_GPIOPinTypeSSI(DAC7811_SSI_SCLK_PORTBASE, DAC7811_SSI_SCLK_Pin);
+
+
+    MAP_SysCtlPeripheralEnable(DAC7811_GPIO_MTX_SYSCTL);
+    while(!(MAP_SysCtlPeripheralReady(DAC7811_GPIO_MTX_SYSCTL)))
+    {
+    }
+    MAP_GPIOPinConfigure(DAC7811_SSI_MTX_GPIO);
+    MAP_GPIOPinTypeSSI(DAC7811_SSI_MTX_PORTBASE, DAC7811_SSI_MTX_Pin);
+
+    MAP_SysCtlPeripheralEnable(DAC7811_GPIO_MRX_SYSCTL);
+    while(!(MAP_SysCtlPeripheralReady(DAC7811_GPIO_MRX_SYSCTL)))
+    {
+    }
+    MAP_GPIOPinConfigure(DAC7811_SSI_MRX_GPIO);
+    MAP_GPIOPinTypeSSI(DAC7811_SSI_MRX_PORTBASE, DAC7811_SSI_MRX_Pin);
+
+    MAP_SysCtlPeripheralEnable(DAC7811_GPIO_SYNC_SYSCTL);
+    while(!(MAP_SysCtlPeripheralReady(DAC7811_GPIO_SYNC_SYSCTL)))
+    {
+    }
+    MAP_GPIOPinConfigure(DAC7811_SSI_SYNC_GPIO);
+    MAP_GPIOPinTypeSSI(DAC7811_SSI_SYNC_PORTBASE, DAC7811_SSI_SYNC_Pin);                                                                         
+
+//   SSIClockSourceSet(SSI0_BASE,SSI_CLOCK_SYSTEM);
+
+   /* Enable the clock to SSI-0 module and configure the SSI Master */
+   MAP_SysCtlPeripheralEnable(DAC7811_SSI_SYSCTL_PERIPH);
+   while(!(MAP_SysCtlPeripheralReady(DAC7811_SSI_SYSCTL_PERIPH)))
+   {
+   }
+
+   SSIClockSourceSet(DAC7811_SSI_BASE,SSI_CLOCK_SYSTEM); //SSI_CLOCK_SYSTEM SSI_CLOCK_ALTCLK
+
+   MAP_SSIConfigSetExpClk(DAC7811_SSI_BASE, systemClock, SSI_FRF_MOTO_MODE_2,
+                          SSI_MODE_MASTER, 30000000, 16);
+//   MAP_SSIIntEnable(SSI0_BASE, SSI_TXEOT);
+   MAP_SSIEnable(DAC7811_SSI_BASE);
+
+//   SSIDMAEnable(SSI0_BASE,SSI_DMA_TX);
+
+   /* Flush the Receive FIFO */
+   while(MAP_SSIDataGetNonBlocking(DAC7811_SSI_BASE, &getResponseData));
+
+   /* Enable the interrupt generation from SSI-0 */
+   MAP_IntEnable(DAC7811_SSI_INT);
+
+   //MAP_SSIDataPut(SSI0_BASE, txdata);
+
+
+    #elif MCUTYPE==C2000
+
+    #endif
+
+
+
+
+}
+
+
+
+
+/**
+ * @description: 将数据写入dac7811，采用硬件ssi使用spi协议方式进行。
+ * @param: 想要写入的数据，有效位数12位。
+ * @return {*}
+ */
+void DAC7811_Hard_Write(uint16_t da)
+
+{
+    da|=0x1000;//bit12=1
+    da&=0x1FFF;//bit15、14、13=0
+    #if MCUTYPE==STM32
+
+
+    #elif MCUTYPE==STM32HAL
+
+
+    #elif MCUTYPE==MSP432P
+
+
+    #elif MCUTYPE==MSP432E
+    MAP_SSIDataPutNonBlocking(SSI0_BASE, da);
+    #elif MCUTYPE==C2000
+
+    #endif
+   
+
+}
+
+#endif 
+
+
+
+/**
+ * @description: 将数据写入dac7811
+ * @param {uint16_t} da:想要写入的数据，有效位数12位。
+ * @return {*}
+ */
+void DAC7811_SPI_Write(uint16_t da)
+{
+    #if TRANSFER_METHOD == SOFTWARE
+
+    DAC7811_Soft_Write(da);
+
+    #else
+    DAC7811_Hard_Write(da);
+
+    #endif
+
+}
 
 
 

@@ -2,7 +2,7 @@
  * @Author: luxun59 luxun59@126.com
  * @Date: 2022-12-03 16:43:46
  * @LastEditors: luxun59 luxun59@126.com
- * @LastEditTime: 2022-12-03 19:01:02
+ * @LastEditTime: 2022-12-03 20:19:07
  * @FilePath: \driver\DAC7811\bspDac7811.h
  * @Description: 
  * 
@@ -67,7 +67,17 @@ void DAC7811_Soft_Init(void);
 
 #else
 
+
+void DAC7811_SPI_MASter_config(void);
+void DAC7811_Hard_Write(uint16_t da);
+
 #endif
+
+void DAC7811_SPI_Write(uint16_t da);
+
+
+
+
 
 void dac7811_dataprocess(uint16_t *adcdata,uint16_t *dacdata,uint32_t num,uint8_t space );
 
